@@ -1,0 +1,124 @@
+
+Tim van der Stek 8:24 AM
+
+Hello!
+
+
+I'd like to invite you to take a look at the job I've posted. Please submit a proposal if you're available and interested.
+
+
+Tim v.
+Avner Gomes 8:24 AM
+
+Hello, Tim! Thanks for the opportunity. I'll be glad to work with you again. If you can send me the data we can adjust the deliverables as we go. If it's something like the last one, I can deliver until afternoon (my timezone). My best regards!
+View details
+TV
+Tim van der Stek 8:27 AM
+
+Awesome, you should have the Excel file in the attachement correct?
+
+IT is almost exactly as last time, just added years, sales rep and profile
+Avner Gomes 8:30 AM
+
+Yes I have it. I was looking on my phone, and it didn't showed up at first. But I have it on my PC now. I'll just reach to you if I have any questions.
+TV
+Tim van der Stek 8:32 AM
+
+perfect thanks
+Avner Gomes 10:33 AM
+
+Hi, Tim. I'm having some issues on the UK's geodatabase, and the task may take a little longer then I predicted. Briefly, the information is divided by areas, districts and sectors, and I'm running a merging process so I can relate it to your table. I'll keep you informed. I appreciate your comprehension.
+Avner Gomes 10:50 AM
+
+Another question is that the sheet doesn't have any columns with year or date information, the columns are only: 'Profiel' (I think it might be 'Profile'), 'AgentSalesRep', 'Segment', 'Customer number', 'Postcode', 'City', 'Country' and ' Value'
+TV
+Tim van der Stek 11:26 AM
+
+Sorry about that, I did not pay attention. You should be good to go now 🙂
+Heatmap file UK.xlsx
+Heatmap file UK.xlsx
+2.62 MB
+Avner Gomes 11:29 AM
+
+Thanks, I'm working on it
+
+Sorry Tim, but now I can't relate this table with the Postcode table information.
+
+Unless the two tables are 'mergeable' side by side, is that right?
+TV
+Tim van der Stek 12:11 PM
+
+I don't understand. Postal code is column E
+Avner Gomes 12:51 PM
+
+I've figured it out. It's OK.
+Avner Gomes 3:55 PM
+Heatmap file UK_processed.xlsx
+Heatmap file UK_processed.xlsx
+8.27 MB
+
+Hi Tim. I'm sending the spreadsheet with the processed data as a preview. I'm working on the relationships between it and the geodatabase I got. I'm having some issues regarding de code system. I'm trying to get another database, but the postcode information is not as freely available for the UK as it was for Germany. I'll get it for the other countries as well. I'll reach out to you tomorrow, as soon as I get some news. Thanks again. Have a great night!
+Fri, Oct 06
+Avner Gomes 9:47 PM
+
+Hello, Tim. Sorry for keep you waiting. I'm sending you the first results. See if it fits your requirements. Let me know if you need anything else. My best regards!
+4 files
+PostCodeDistrict_Value_2023.png
+2.27 MB
+Heatmap file UK_processed_2.xlsx
+5.58 MB
+PostCodeDistrict_Value_2021.png
+2.27 MB
+PostCodeDistrict_Value_2022.png
+2.27 MB
+Mon, Oct 09
+TV
+Tim van der Stek 7:11 AM
+
+Hi Avnes,
+
+The png 's are all the same. Are you sure that is all correct?
+Avner Gomes 7:16 AM
+
+Hi, Tim. They are similar, but the colors changes over the years.
+
+I'm working on a new kind of report, that is dynamic and you can apply different filters as you need. You will just need to have the Microsoft PowerBI installed. It's very easy to use.
+Avner Gomes 7:29 AM
+
+I can put both UK and Germany reports together, and keep them up to date as you need it
+
+I am also able to use machine learning algorithms to predict sales behavior over time. If it would be of your interest.
+
+We can book a call if you'd like me to explain it in more detail.
+TV
+Tim van der Stek 8:00 AM
+
+We do not have microsoft BI installed. Are you still able to apply machine learning?
+
+It does sound interesting
+Avner Gomes 8:03 AM
+
+The predictions doesn't involve power BI. I'll have to run it in a python environment and send tables and charts in pdf format
+TV
+Tim van der Stek 8:17 AM
+
+Lets plan a call
+Avner Gomes 8:30 AM
+
+Could you do it 10AM tomorrow (your timezone)?
+
+I can present the BI tool and the premises for the machine learning system
+TV
+Tim van der Stek 8:38 AM
+
+No sorry, How about wednesday at 11:00 my time?
+Avner Gomes 8:44 AM
+
+It would be better at 10, or earlier.
+TV
+Tim van der Stek 8:51 AM
+
+Let's do 09:00-09:30. I have another meeting after. Will that work for you?
+Avner Gomes 8:53 AM
+
+It will work just fine. I will prepare the BI tool, so you can see it's advantages. And will show you the ML predition system, so we can discuss the possibilities and bottlenecks we may have for the forecasting.
