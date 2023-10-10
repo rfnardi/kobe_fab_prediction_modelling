@@ -5,11 +5,13 @@ import numpy as np
 
 start = timeit.default_timer()
 
-pivot_table = pd.read_csv('../data/timeseries_original.csv', sep=';', low_memory=False)
+pivot_table = pd.read_csv('../../data/timeseries_original.csv', sep=';', low_memory=False)
 
 pivot_table.iloc[1:,1:] = pivot_table.iloc[1:,1:].replace(',', '.', regex=True).astype(float)
 
-pivot_table.to_csv('../data/timeseries_comma_fixed.csv')
+pivot_table = pivot_table.transpose()
+
+pivot_table.to_csv('../../data/timeseries_ready_to_go.csv')
 
 # print('Head:', pivot_table.head())
 # print(pivot_table.iloc[0])
@@ -18,8 +20,6 @@ pivot_table.to_csv('../data/timeseries_comma_fixed.csv')
 
 # print(pivot_table.index)
 
-# print(pivot_table['Part'])
-
 end = timeit.default_timer()
 exec_time = end - start
-print(f'Código executado em {exec_time} minutos')
+print(f'Código executado em {exec_time} segundos')

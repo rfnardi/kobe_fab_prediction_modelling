@@ -24,7 +24,7 @@ from tensorflow.keras.losses import MeanSquaredError
 from keras.regularizers import l2, l1
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-from lstm_upon_clusters_module import *
+from lstm_upon_clusters_module import Data_to_X, Data_to_Y, Data_to_X_cli_way_p, Data_to_Y_cli_way_p, SaveBestModel, avg_baseline, avg_baseline_cli_way_p, calculate_SMAPE, get_top_items
 
 seed = 0
 np.random.seed(seed)
@@ -60,9 +60,9 @@ else:
 
 print('Reading data')
 
-pivot_table = pd.read_csv('../data/timeseries.csv', sep=';', low_memory=False)
+pivot_table = pd.read_csv('../data/timeseries_original.csv', sep=';', low_memory=False)
+pivot_table.iloc[1:,1:] = pivot_table.iloc[1:,1:].replace(',', '.', regex=True).astype(float)
 
-# pivot_table.iloc[1:1:] = pivot_table.iloc[1:1:].round(2)
 # pivot_table = pivot_table.transpose()
 
 #-----------------------------------------------
@@ -74,8 +74,9 @@ scaler = StandardScaler()
 pivot_table_scaled = scaler.fit_transform(pivot_table.iloc[1:,1:])
 
 pivot_table_scaled = pivot_table_scaled.transpose()
+pivot_table = pivot_table.transpose()
 
-inertia = []
+# inertia = []
 
 # Testar diferentes valores de k (número de clusters)
 # for k in range(1, 30):
@@ -90,60 +91,15 @@ inertia = []
 # plt.title('Método Elbow por Produto')
 # plt.show()
 
-# Gráfico aponta n_clusters=5 ===>
-n_clusters = 5
-kmeans = KMeans(n_clusters = n_clusters, random_state=0, n_init=10)
-cluster_labels = kmeans.fit_predict(pivot_table_scaled)
+# clustering não convergiu
 
-pivot_table = pivot_table.transpose()
+# sys.exit(1)
 
-cluster_labels = list(cluster_labels)
-pivot_table['cluster'] = cluster_labels
 
 #-----------------------------------------------
 #-----------------------------------------------
 
-# fazer aqui a seleção dos itens de acordo com o cluster 
-# cluster_number = 4
-
-if cli_way == 'p':
-    cluster_number = pivot_table.loc[pivot_table.index == predicted_item_name]['cluster'][0]
-    print('Cluster number: ', cluster_number)
-
-cluster = pivot_table[pivot_table['cluster'] == cluster_number]
-cluster = cluster.drop('cluster', axis=1)
-cluster = cluster.transpose()
-cluster_copy = cluster.copy()
-
-# print(cluster.head())
-
-n_series_in_cluster = len(cluster.columns)
-
-
-# ------------------------------------------------------
-# ------------------------------- lendo da CLI:
-
-if sys.argv[1] == 'p':
-    if sys.argv[2] == 'f':
-        n_series_training = n_series_in_cluster
-    else:
-        n_series_training = int(sys.argv[2]) # <-------------------- quantidade de séries usadas para treinamento
-
-if sys.argv[1] != 'p':
-    if sys.argv[2] == 'f':
-        n_series_training = n_series_in_cluster
-    else:
-        n_series_training = int(sys.argv[2]) # <-------------------- quantidade de séries usadas para treinamento
-
-    if (sys.argv[3] == 'f'):
-        n_series = n_series_in_cluster
-    else:
-        n_series = int(sys.argv[3])          # <-------------------- quantidade de séries previstas
-
-# ------------------------------- fim da leitura da CLI:
-# ------------------------------------------------------
-
-sorted_serie = cluster.sum().sort_values(ascending=False)
+sorted_serie = pivot_table.sum().sort_values(ascending=False)
 
 # print(sorted_serie.head())
 
@@ -154,27 +110,20 @@ sorted_serie = cluster.sum().sort_values(ascending=False)
 
 top_sales = sorted_serie.head(n_series)
 top_sales_items = top_sales.index
-top_series = cluster[top_sales_items]
+top_series = pivot_table[top_sales_items]
 # print(top_series.shape)
-
-scaler = MinMaxScaler()
-# pivot_table_renormalized = pd.DataFrame(scaler.fit_transform(top_series), columns=top_sales_items)
-pivot_table_renormalized = pd.DataFrame(scaler.fit_transform(cluster), columns=cluster.columns)
-# pivot_table_renormalized = pd.DataFrame(cluster, columns=cluster.columns) #not renormalized! But we kept the same name!!!
-
-# <h2 style="color:black; background-color: gray; font-weight: bold">Preparando dados para treino</h2>
 
 # Divisão em conjuntos de treinamento, validação e teste
 
 print('Splitting data into training and test')
 
-pivot_table_renormalized.reset_index(drop=True, inplace=True)
-train_size = int(len(pivot_table_renormalized) * 0.8)
-train_plus_val_size = int(len(pivot_table_renormalized) * 0.9)
-train_data = pivot_table_renormalized[:train_size]
-# val_data = pivot_table_renormalized[train_size:]
-val_data = pivot_table_renormalized[train_size:train_plus_val_size]
-test_data = pivot_table_renormalized[train_plus_val_size:]
+# pivot_table_scaled.reset_index(drop=True, inplace=True)
+train_size = int(len(pivot_table_scaled) * 0.8)
+train_plus_val_size = int(len(pivot_table_scaled) * 0.9)
+train_data = pivot_table_scaled[:train_size]
+# val_data = pivot_table_scaled[train_size:]
+val_data = pivot_table_scaled[train_size:train_plus_val_size]
+test_data = pivot_table_scaled[train_plus_val_size:]
 
 print('===================================')
 print('tipos de dados: treino, val e teste')
@@ -195,11 +144,8 @@ horizon = 4
 # X_train, Y_train = Data_to_X_Y(train_data, N_lags, horizon)
 
 #Usando todas as series para prever apenas algumas:
-if cli_way == 'm':
-    X_train, Y_train = Data_to_X(train_data, N_lags, horizon, n_series_training), Data_to_Y(train_data, N_lags, horizon, n_series)
-# if cli_way == 'p':
-else:
-    X_train, Y_train = Data_to_X_cli_way_p(train_data, N_lags, horizon, n_series_training, predicted_item_name), Data_to_Y_cli_way_p(train_data, N_lags, horizon, predicted_item_name)
+n_series = len(pivot_table.columns)
+X_train, Y_train = Data_to_X(train_data, N_lags, horizon, n_series ), Data_to_Y(train_data, N_lags, horizon, n_series)
 
 
 print('X_train:', X_train.shape)
@@ -286,9 +232,9 @@ print('Constructing Validation Data')
 #Usando todas as series para prever apenas algumas:
 # X_val, Y_val = Data_to_X(val_data, N_lags, horizon), Data_to_Y(val_data, N_lags, horizon, n_series)
 if cli_way == 'm':
-    X_val, Y_val = Data_to_X(pivot_table_renormalized, N_lags, horizon, n_series_training), Data_to_Y(pivot_table_renormalized, N_lags, horizon, n_series)
+    X_val, Y_val = Data_to_X(pivot_table_scaled, N_lags, horizon, n_series_training), Data_to_Y(pivot_table_scaled, N_lags, horizon, n_series)
 else:
-    X_val, Y_val = Data_to_X_cli_way_p(pivot_table_renormalized, N_lags, horizon, n_series_training, predicted_item_name), Data_to_Y_cli_way_p(pivot_table_renormalized, N_lags, horizon, predicted_item_name)
+    X_val, Y_val = Data_to_X_cli_way_p(pivot_table_scaled, N_lags, horizon, n_series_training, predicted_item_name), Data_to_Y_cli_way_p(pivot_table_scaled, N_lags, horizon, predicted_item_name)
 
 
 if cli_way == 'm':
@@ -326,9 +272,9 @@ train_loss = history.history['loss'][-1]
 
 # Y_pred_baseline = avg_baseline(val_data, N_lags, n_series)
 if cli_way == 'm':
-    Y_pred_baseline = avg_baseline(pivot_table_renormalized, N_lags, n_series)
+    Y_pred_baseline = avg_baseline(pivot_table_scaled, N_lags, n_series)
 else: 
-    Y_pred_baseline = avg_baseline_cli_way_p(pivot_table_renormalized, N_lags)
+    Y_pred_baseline = avg_baseline_cli_way_p(pivot_table_scaled, N_lags)
 
 # print('Y_pred_baseline.shape : ', Y_pred_baseline.shape)
 # print('Y_val.shape : ', Y_val.shape)
@@ -349,11 +295,11 @@ print('Plotting top 1 item')
 
 
 if cli_way == 'm':
-    item_name_inside_list, shown_serie = get_top_items(pivot_table_renormalized, 2)
+    item_name_inside_list, shown_serie = get_top_items(pivot_table_scaled, 2)
     item_name = item_name_inside_list[0]
 else:
     item_name = predicted_item_name
-    shown_serie = pivot_table_renormalized[predicted_item_name]
+    shown_serie = pivot_table_scaled[predicted_item_name]
 
 print('top_1_item:', item_name)
 
@@ -361,7 +307,7 @@ print('top_1_item:', item_name)
 # -----------------------------------------------------------------------------
 
 # being wild ...
-_ , top_series = get_top_items(pivot_table_renormalized, n_series)
+_ , top_series = get_top_items(pivot_table_scaled, n_series)
 
 if cli_way == 'm':
     col_position = top_series.columns.get_loc(item_name)
@@ -423,8 +369,8 @@ scaled_prediction_top1_item_baseline = np.array(full_rediction_1_item_baseline)
 
 # Undoing Min_Max_Scaler for just 1 column:
 
-min_col = cluster_copy.min().min()
-max_col = cluster_copy.max().max()
+min_col = pivot_table.min().min()
+max_col = pivot_table.max().max()
 un_scaled_prediction_top1_item = (max_col - min_col)* scaled_prediction_top1_item + min_col
 un_scaled_prediction_top1_item_baseline = (max_col - min_col)* scaled_prediction_top1_item_baseline + min_col
 

@@ -1,4 +1,6 @@
-from tensorflow.keras.callbacks import ModelCheckpoint, Callback
+from tensorflow.keras.callbacks import Callback
+import numpy as np
+import pandas as pd
 
 # Classe de callback personalizada para salvar o melhor modelo com base na val_loss
 class SaveBestModel(Callback):
@@ -21,11 +23,11 @@ class SaveBestModel(Callback):
 
 
 def get_top_items(P_table, top_n):
-    if top_n > 1:
-        Sorted_serie = P_table.sum().sort_values(ascending=False)
+    if top_n > 2:
+        Sorted_serie = pd.DataFrame(P_table).sum().sort_values(ascending=False)
         Top_sales = Sorted_serie.head(top_n)
         Top_sales_items = list(Top_sales.index)
-        Top_series = P_table[Top_sales_items]
+        Top_series = pd.DataFrame(P_table)[Top_sales_items]
     else: 
         Top_sales_items = []
         Top_series = pd.DataFrame()
@@ -90,7 +92,7 @@ def Data_to_X_cli_way_p(P_table, N, horizon, n_series_training, predicted_item_n
 def Data_to_Y(P_table, N, horizon, n_series_prediction):
     Y = []
     top_sales_items, top_series = get_top_items(P_table, n_series_prediction)
-    top_series = P_table[top_sales_items]
+    top_series = pd.DataFrame(P_table)[top_sales_items]
     for item in top_sales_items:
         y = []
         serie_as_np = np.array(top_series[item])
